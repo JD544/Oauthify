@@ -59,7 +59,8 @@ The `Oauth2` component will handle the authentication process, and will return t
 Redirect is an authentication mode where the user is redirected to the `redirectUri`, which is set in the `Oauth2` component. This mode is the most secure and most flexible, but it is also the most streamlined way to use Oauth2. As it does not require additional client side handling.
 
 ## Example of an handler (Redirection handler)
-``tsx
+
+```tsx
 import React, { useState, useEffect } from'react';
 import { useParams } from 'react-router-dom';
 import { Oauth2, redirect_mode_hook } from '@JD522/oauthify';
@@ -89,16 +90,11 @@ function App(): React.FC {
         const { client } = useParams();
 
         redirect_mode_hook({
-            client,
+            "client_name": client,
             onSuccess,
             Error
             });
-        redirect_mode_hook(
-        client,
-        onSuccess,
-        Error
-        );
-
+ 
     }, [])
 
     return (
@@ -109,14 +105,14 @@ function App(): React.FC {
         </div>
         )
     }
-    ````
+````
 
-    The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
+The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
 
-    You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
+You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
 
-    Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
-    additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
+Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
+additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
 
 # Features
  

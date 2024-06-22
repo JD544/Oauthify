@@ -6,13 +6,15 @@
 
  ```tsx
  import React, { useState } from'react';
- import { Oauth2 } from '@oauthify/oauthify';
+ import { Oauth2 } from '@JD522/oauthify';
 
  function App(): React.FC {
     const [ error, setError ] = React.useState<string | any>();
 
     const signIn = (oauth_data: any) => {
-        // Login 
+        /**
+         * The oauth login was successful
+         */
     }
 
     const Error = (error: string | any) {
@@ -30,6 +32,10 @@
                 provider="<PROVIDER>"
                 apiKey="<API_KEY" 
                 clientId="<CLIENT_ID>" 
+                state="<STATE>"
+                redirectUri="<REDIRECT_URI>"
+                mode="<MODE>"
+                responseType="<RESPONSE_TYPE>"
                 scope="<SCOPES>"
                 onSuccess={sighnIn} 
                 onError={Error}

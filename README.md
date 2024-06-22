@@ -37,7 +37,7 @@
                 mode="<MODE>"
                 responseType="<RESPONSE_TYPE>"
                 scope="<SCOPES>"
-                onSuccess={sighnIn} 
+                onSuccess={signIn} 
                 onError={Error}
             />
         </div>                 

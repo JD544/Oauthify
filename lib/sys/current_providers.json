@@ -1,0 +1,12 @@
+{
+    "providers": [
+        {
+            "id": "Kalicloud",
+            "oauth_url": "http://localhost:3000/oauth2/auth",
+            "token_url": "http://localhost:3000/oauth2/token"
+        }
+    ],
+    "default": "Kalicloud",
+    "scopes": ["openid", "email", "profile"],
+    "restrictScopes": true
+}

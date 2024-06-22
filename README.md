@@ -44,7 +44,7 @@
     )
  }
 
-````
+```
 
 # Authentication Modes
 There are two types of authentication modes, `Redirect` and `Popup`.

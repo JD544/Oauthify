@@ -45,6 +45,70 @@
  }
 
 ````
+
+# Authentication Modes
+There are two types of authentication modes, `Redirect` and `Popup`.
+
+## Popup
+Popup is an mode of authentication, where the user is redirected to a popup window, instead of the default browser window. 
+
+The `Oauth2` component will handle the authentication process, and will return the user's `access_token` and `refresh_token`.
+
+## Redirect
+Redirect is an authentication mode where the user is redirected to the `redirectUri`, which is set in the `Oauth2` component. This mode is the most secure and most flexible, but it is also the most streamlined way to use Oauth2. As it does not require additional client side handling.
+
+## Example of an handler (Redirection handler)
+```tsx
+import React, { useState, useEffect } from'react';
+import { useParams } from 'react-router-dom';
+import { Oauth2, redirect_mode_hook } from '@JD522/oauthify';
+
+function App(): React.FC {
+    const [ error, setError ] = React.useState<string | any>();
+    const [ access_token, setAccessToken ] = React.useState<string | any>();
+    const [ refresh_token, setRefreshToken ] = React.useState<string | any>(); // If the application supports refresh tokens, most do
+    const [ user, setUser ] = React.useState<string | any>();
+
+    const params = useParams();
+
+    const onSuccess = (oauth_data: any) => {
+    /**
+     * The oauth login was successful
+     * 
+    */
+   }
+
+   const Error = (error: string | any) => {
+   setError(error)
+   }
+
+    useEffect(() => {
+        const { client } = useParams();
+
+        redirect_mode_hook(
+        client,
+        onSuccess,
+        Error
+        );
+
+    }, [])
+
+    return (
+        <div className="Login-page">
+            <h1>Validating the oauth was successful</h1>
+            {error && <p>{error}</p>}
+        </div>
+        )
+    }
+    ```
+
+    The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
+
+    You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
+
+    Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
+    additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
+
 # Features
  
 - Fully customizable

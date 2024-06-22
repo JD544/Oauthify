@@ -1,6 +1,5 @@
-import { provider } from "../types/main";
-import { API } from "./api_service";
-import { uuid } from "uuidv4";
+import { provider } from "../main";
+// import { API } from "./api_service";
 import { 
     providers,
     scopes,
@@ -34,10 +33,11 @@ export class OauthifyProvider {
     public doAuth(
         provider: string,
         clientId: string,
+        client_secret: string,
         scopes: string, 
         redirectUri: string,
         apiKey?: string,
-        state: string = uuid(),        
+        state: string = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),    
         responseType: string = 'code',
         mode: string = 'redirect'        
     ): Promise<any> {
@@ -59,32 +59,33 @@ export class OauthifyProvider {
          const formattedScopes: string = scopes
 
          if (mode === 'popup') {
-            oauthWindow = window.open(`${currentProvider.oauth_url}?client_id=${clientId}${scopes ? `&scope=${formattedScopes}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}` : ''}`
+            oauthWindow = window.open(`${currentProvider.oauth_url}?client_id=${clientId}&client_secret=${client_secret}${scopes ? `&scope=${formattedScopes}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}` : ''}`
             , 'Oauth2', 'width=600,height=600')    
          } else if (mode === 'redirect') {
-            window.location.assign(`${currentProvider.oauth_url}?client_id=${clientId}${scopes ? `&scope=${formattedScopes}` : ''}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}`)
+            window.location.assign(`${currentProvider.oauth_url}?client_id=${clientId}&client_secret=${client_secret}${scopes ? `&scope=${formattedScopes}` : ''}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}`)
          } else {
             throw new Error(`Mode ${mode} not supported`)
          }
 
          if (oauthWindow && mode === 'popup') {                     
+            reject('Is going to be redirected to popup')
          // Wait for oauth flow to complete
-         const interval = setInterval(() => {
-            if (oauthWindow?.closed) {
-            clearInterval(interval);
+        //  const interval = setInterval(() => {
+        //     if (oauthWindow?.closed) {
+        //     clearInterval(interval);
             
-            // Handle get data from oauth flow
-            const api: API = new API(currentProvider.token_url)
+        //     // Handle get data from oauth flow
+        //     const api: API = new API(currentProvider.token_url)
             
-            api.Post(`${currentProvider.token_url}?client_id=${clientId}${scopes ? `&scope=${formattedScopes}` : ''}`, {}).then((data: any) => {
-                resolve(data)
-            }).catch((error: Error) => {
-                reject(error)
-            })
-            } 
-        }, 1000);
+        //     api.Post(`${currentProvider.token_url}?client_id=${clientId}${scopes ? `&scope=${formattedScopes}` : ''}`, {}).then((data: any) => {
+        //         resolve(data)
+        //     }).catch((error: Error) => {
+        //         reject(error)
+        //     })
+        //     } 
+        // }, 1000);
         } else {
-            return 'Is going to be redirected to redirect_uri'
+            resolve('Is going to be redirected to redirect_uri')
         }
         })
     }

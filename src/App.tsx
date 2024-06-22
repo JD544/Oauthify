@@ -1,15 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Oauth2 } from '../'
+import { Oauth2, redirect_mode_hook } from '..'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [ name, setName] = useState('')
+
+  useEffect(() => {
+    let callbackCode = window.location.search.split("code=")[1];
+  
+    if (callbackCode) {
+    redirect_mode_hook({
+      client_name: 'Kalicloud',
+      success_callback: (data: any) => {
+        setName(data.decodedToken.email)          
+      },
+      error_callback: (error: any) => {
+        window.alert("callback error, check console")
+        console.log(error)
+      }
+    })
+    }
+  }, [])
 
   return (
     <>
       <div>
+        <p>You are now: {name}</p>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -24,10 +43,15 @@ function App() {
         </button>
         <Oauth2
          id='test'
+         mode={"redirect"}
          className='test'
          provider="Kalicloud"
-         apiKey="$d1e2f3g4-5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4" 
-         clientId="$c1a2b3e4-5d6e-7f8g-9h0i-j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z" 
+         redirectUri={"http://localhost:5173/oauth2/callback"}
+         state={"4"}
+         responseType={"code"}
+         apiKey="$d1e2f3g4-5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4"         
+         clientId="1" 
+         client_secret='a'
          scope="openid" 
          onSuccess={(data: any) => console.log(data)} 
          onError={(error: any) => console.log(error)}

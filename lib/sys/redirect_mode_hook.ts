@@ -1,13 +1,9 @@
+import { redirect_mode_hook_type } from "../main";
 import { API } from "./api_service";
 import {
     providers
 } from "./current_providers.json";
 
-export interface redirect_mode_hook_type {
-    client_name: string;
-    success_callback: (data: any) => void;
-    error_callback: (error: any) => void;
-}
 
 /**
  * A function that handles the redirect mode hook for OAuth authentication.
@@ -26,9 +22,8 @@ const redirect_mode_hook = ({
     const search_params = new URLSearchParams(window.location.search);
 
     const code = search_params.get("code");
-    const state = search_params.get("state");
     
-    if (!state || !code) {
+    if (!code) {
         throw new Error("Missing required parameters");
     }
     
@@ -61,7 +56,10 @@ const handle_redirect = (
             // Get data from oauth flow
             const api: API = new API(provider.token_url)
 
-            api.Post(`${provider.token_url}?grant_type=authorization_code&code=${code}`, {}).then((data: any) => {
+            api.Post(`${provider.token_url}?grant_type=authorization_code&code=${code}`, {
+                code: code,
+                grant_type: 'authorization_code'
+            }).then((data: any) => {
                 clearInterval(interval);
                 return success_callback(data);
 

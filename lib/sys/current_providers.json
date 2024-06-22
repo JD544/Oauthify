@@ -2,7 +2,7 @@
     "providers": [
         {
             "id": "Kalicloud",
-            "oauth_url": "http://localhost:3000/oauth2/auth",
+            "oauth_url": "http://localhost:3000/oauth",
             "token_url": "http://localhost:3000/oauth2/token"
         }
     ],

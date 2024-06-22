@@ -1,20 +1,6 @@
+// import React from 'react';
 import { OauthifyProvider } from '../../sys/providers';
-
-export interface Oauth2Props {
-  // `oauth_login_btn`
-  id: string;
-  className: string;
-  provider: "Kalicloud" | "Google" | "Github";
-  apiKey: string; // Used by many oauth providers
-  clientId: string; // Used by Google, Github and Kalicloud
-  scope: string;  // Defines the requested information from the provider
-  state?: string; // A unique value that can be used to protect against CSRF attacks/ default: uuid()
-  mode: "popup" | "redirect"; // Specify if you want to use popup or redirect/ required: true
-  responseType: "code" // Specify your response type/ required: true
-  redirectUri: string;
-  onSuccess: (oauth_data: any) => void;
-  onError: (error: any) => void;
-}
+import { Oauth2Props } from '../../main.ts';
 
 /**
  * Renders an OAuth2 login button component.
@@ -24,6 +10,9 @@ export interface Oauth2Props {
  *   - className (string): The CSS class name for the button element.
  *   - provider (string): The OAuth2 provider (e.g., "Kalicloud", "Google", "Github").
  *   - apiKey (string): The API key for the OAuth2 provider.
+ *   - state (string): A unique value that can be used to protect against CSRF attacks.
+ *   - mode (string): Specify if you want to use popup or redirect.
+ *   - responseType (string): Specify your response type.
  *   - clientId (string): The client ID for the OAuth2 provider.
  *   - scope (string): The requested scope of information from the provider.
  *   - onSuccess (function): The callback function to be called on successful authentication.
@@ -42,6 +31,7 @@ export function Oauth2({
   responseType, 
   redirectUri,
   clientId, 
+  client_secret,
   scope, 
   onSuccess, 
   onError
@@ -49,7 +39,7 @@ export function Oauth2({
   const handleDoOauth = () => {
     const oauth = new OauthifyProvider()
     
-    oauth.doAuth(provider, clientId, scope, redirectUri, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
+    oauth.doAuth(provider, clientId, client_secret, scope, redirectUri, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
   }
 
   return (

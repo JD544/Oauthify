@@ -32,6 +32,7 @@
                 provider="<PROVIDER>"
                 apiKey="<API_KEY" 
                 clientId="<CLIENT_ID>" 
+                clientSecret="<CLIENT_SECRET>"
                 state="<STATE>"
                 redirectUri="<REDIRECT_URI>"
                 mode="<MODE>"
@@ -76,6 +77,8 @@ function App(): React.FC {
      * The oauth login was successful
      * 
     */
+
+   setUser(oauth_data.decodedToken.email);
    }
 
    const Error = (error: string | any) => {
@@ -85,11 +88,11 @@ function App(): React.FC {
     useEffect(() => {
         const { client } = useParams();
 
-        redirect_mode_hook(
-        client,
-        onSuccess,
-        Error
-        );
+        redirect_mode_hook({
+            client,
+            onSuccess,
+            Error
+            });
 
     }, [])
 
@@ -97,6 +100,7 @@ function App(): React.FC {
         <div className="Login-page">
             <h1>Validating the oauth was successful</h1>
             {error && <p>{error}</p>}
+            {user && <p>You are now authticated as: {user}</p>}
         </div>
         )
     }

@@ -44,7 +44,7 @@
     )
  }
 
-```
+````
 
 # Authentication Modes
 There are two types of authentication modes, `Redirect` and `Popup`.
@@ -100,14 +100,15 @@ function App(): React.FC {
         </div>
         )
     }
-    ```
 
-    The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
+```
 
-    You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
+The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
 
-    Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
-    additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
+You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
+
+Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
+additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
 
 # Features
  

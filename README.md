@@ -6,7 +6,7 @@
 
  ```tsx
  import React, { useState } from'react';
- import { Oauth2 } from '@JD522/oauthify';
+ import { Oauth2 } from '@kalicloud/oauthify';
 
  function App(): React.FC {
     const [ error, setError ] = React.useState<string | any>();
@@ -63,7 +63,7 @@ Redirect is an authentication mode where the user is redirected to the `redirect
 ```tsx
 import React, { useState, useEffect } from'react';
 import { useParams } from 'react-router-dom';
-import { Oauth2, redirect_mode_hook } from '@JD522/oauthify';
+import { Oauth2, redirect_mode_hook } from '@kalicloud/oauthify';
 
 function App(): React.FC {
     const [ error, setError ] = React.useState<string | any>();

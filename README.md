@@ -119,7 +119,7 @@ additionally <b>Make sure</b> that the code above is wrapped in the redirect url
 > - The `Oauth2` component will handle the authentication process, and will return the user's `access_token` and `refresh_token`.
 > - Added Redirection hook, which will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
 > - Added support for `client_secret`
-> - Added support for unquique `state` to be validated to prevent CSRF attacks.
+> - Added support for unique `state` to be validated to prevent CSRF attacks.
 > - Added support for `response_type` which is used to determine the type of response that the application will receive.
 > - Added support for `scope` which is used to determine what data the application will access.
 

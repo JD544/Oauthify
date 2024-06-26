@@ -50,12 +50,12 @@ function App() {
          mode={"redirect"}
          className='test'
          provider="Google"
-         redirectUri={"http://localhost:5173/google/callback"}
+         redirectUri={""}
         //  state={"4"}
          responseType={"code"}
          apiKey="0"         
-         clientId="933403983824-jj2u5kedlapktv4kni2l1vavtkkd9sd1.apps.googleusercontent.com" 
-         client_secret="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"
+         clientId="" 
+         client_secret=""
          scope="email" 
          onSuccess={(data: any) => console.log(data)} 
          onError={(error: any) => console.log(error)}

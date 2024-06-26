@@ -144,7 +144,7 @@ additionally <b>Make sure</b> that the code above is wrapped in the redirect url
     - Add support for Refreshing Tokens 
     - Add support for Custom Oauth2.0 Implementations
 
-## Buitin oauth providers
+## Builtin oauth providers
 
 We have included a select few of built in providers, which you can use by passing the provider name as a string.
 

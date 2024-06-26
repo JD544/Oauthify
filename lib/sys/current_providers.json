@@ -3,9 +3,32 @@
         {
             "id": "Kalicloud",
             "oauth_url": "http://localhost:3000/oauth",
-            "token_url": "http://localhost:3000/oauth2/token"
+            "token_url": "http://localhost:3000/oauth2/token",
+            "user_endpoint": "http://localhost:3000/oauth2/info",
+            "logout_url": "http://localhost:3000/oauth2/logout"           
+        }, 
+        {
+            "id": "Google",
+            "oauth_url": "https://accounts.google.com/o/oauth2/v2/auth",
+            "token_url": "https://accounts.google.com/o/oauth2/token",
+            "user_endpoint": "https://www.googleapis.com/oauth2/v1/userinfo",
+            "logout_url": ""
+        },
+        {
+            "id": "Microsoft",
+            "oauth_url": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+            "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "user_endpoint": "https://graph.microsoft.com/v1.0/me",
+            "logout_url": ""
+        },
+        {
+            "id": "Facebook",
+            "oauth_url": "https://www.facebook.com/v15.0/dialog/oauth",
+            "token_url": "https://graph.facebook.com/v15.0/oauth/access_token",
+            "user_endpoint": "https://graph.facebook.com/v15.0/me",
+            "logout_url": ""            
         }
-    ],
+    ],  
     "default": "Kalicloud",
     "scopes": ["openid", "email", "profile"],
     "restrictScopes": true

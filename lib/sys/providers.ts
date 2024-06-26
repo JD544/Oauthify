@@ -1,5 +1,7 @@
 import { provider } from "../main";
 // import { API } from "./api_service";
+import pkceChallenge from "pkce-challenge";
+
 import { 
     providers,
     scopes,
@@ -25,6 +27,7 @@ export class OauthifyProvider {
      * @param {string} scopes - The requested scopes for the authentication.
      * @param {string} redirectUri - The redirect URI after the authentication.
      * @param {string} [apiKey] - The optional API key for the provider.
+     * @param {string} [client_secret] - The optional client secret for the provider.
      * @param {string} [state] - The optional state for the authentication.
      * @param {string} [responseType='code'] - The optional response type for the authentication.
      * @param {string} [mode='redirect'] - The optional mode for the authentication flow.
@@ -32,10 +35,10 @@ export class OauthifyProvider {
      */
     public doAuth(
         provider: string,
-        clientId: string,
-        client_secret: string,
+        clientId: string,        
         scopes: string, 
-        redirectUri: string,
+        redirectUri: string,        
+        client_secret: string,
         apiKey?: string,
         state: string = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),    
         responseType: string = 'code',
@@ -53,40 +56,45 @@ export class OauthifyProvider {
          }  
 
          // Handle oauth flow
-         let oauthWindow: Window | Location | null = null;
+         let oauthWindow: Window | null = null;
 
-         // format scopes for url
-         const formattedScopes: string = scopes
+         let oauth_url = `${currentProvider.oauth_url}?client_id=${clientId}${provider != 'Google' ? `&client_secret=${client_secret}` : ''}&scope=${scopes}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}`
 
-         if (mode === 'popup') {
-            oauthWindow = window.open(`${currentProvider.oauth_url}?client_id=${clientId}&client_secret=${client_secret}${scopes ? `&scope=${formattedScopes}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}` : ''}`
-            , 'Oauth2', 'width=600,height=600')    
-         } else if (mode === 'redirect') {
-            window.location.assign(`${currentProvider.oauth_url}?client_id=${clientId}&client_secret=${client_secret}${scopes ? `&scope=${formattedScopes}` : ''}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${state}&apiKey=${apiKey}`)
-         } else {
-            throw new Error(`Mode ${mode} not supported`)
+         if (provider === 'Microsoft') {
+                var code_challenge = await pkceChallenge();
+                localStorage.setItem("code_verifier", code_challenge.code_verifier);
+            oauth_url = `${currentProvider.oauth_url}?client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&response_type=${responseType}&response_mode=query&code_challenge_method=S256&code_challenge=${code_challenge.code_challenge}&state=${state}&apiKey=${apiKey}`
          }
 
-         if (oauthWindow && mode === 'popup') {                     
-            reject('Is going to be redirected to popup')
-         // Wait for oauth flow to complete
-        //  const interval = setInterval(() => {
-        //     if (oauthWindow?.closed) {
-        //     clearInterval(interval);
-            
-        //     // Handle get data from oauth flow
-        //     const api: API = new API(currentProvider.token_url)
-            
-        //     api.Post(`${currentProvider.token_url}?client_id=${clientId}${scopes ? `&scope=${formattedScopes}` : ''}`, {}).then((data: any) => {
-        //         resolve(data)
-        //     }).catch((error: Error) => {
-        //         reject(error)
-        //     })
-        //     } 
-        // }, 1000);
-        } else {
-            resolve('Is going to be redirected to redirect_uri')
-        }
+         // store clientId, client_secre and redirectUri in local storage for future use
+         localStorage.setItem("clientId", clientId)
+         localStorage.setItem("client_secret", client_secret)
+         localStorage.setItem("redirectUri", redirectUri)
+         localStorage.setItem("state", state)
+         localStorage.setItem("lastProvider", JSON.stringify(currentProvider))
+        
+         if (mode === 'popup') {
+            resolve("You are now being redirected to the OAuth2 provider. Please wait...")
+            oauthWindow = window.open(oauth_url
+            , 'Oauth2', 'width=600,height=600')    
+
+            if (oauthWindow) {
+                let interval = setInterval(() => {
+                    if (oauthWindow?.location.href.includes(redirectUri)) {
+                        clearInterval(interval)
+                        oauthWindow.close()
+                        resolve(oauthWindow?.location.href)
+                    }
+                }, 2000);
+            }            
+
+         } else if (mode === 'redirect') {
+            resolve("You are now being redirected to the OAuth2 provider. Please wait...")
+            window.location.assign(oauth_url)
+         } else {
+            reject("Mode not supported")
+            throw new Error(`Mode ${mode} not supported`)         
+         }
         })
     }
 }

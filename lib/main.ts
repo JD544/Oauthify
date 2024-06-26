@@ -2,6 +2,7 @@ export { Oauth2 } from './components/button/oauth_login_btn'
 export { OauthifyProvider } from './sys/providers'
 export { API } from './sys/api_service'
 export { redirect_mode_hook } from './sys/redirect_mode_hook'
+export { UserModeHook as user_hook } from './sys/user_mode_hook'
 
 /**
  * Type definitions for the Oauthify library.
@@ -14,7 +15,6 @@ export type provider = {
 }
 
 export type redirect_mode_hook_type = {
-    client_name: string,
     success_callback: (data: any) => void,
     error_callback: (error: any) => void
 }
@@ -22,7 +22,7 @@ export type redirect_mode_hook_type = {
 export type Oauth2Props = {
     id: string,
     className: string,
-    provider: "Kalicloud" | "Google" | "Github",
+    provider: "Kalicloud" | "Google" | "Microsoft" | "Facebook",
     apiKey: string,
     clientId: string,
     client_secret: string,

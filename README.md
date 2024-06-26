@@ -63,7 +63,7 @@ Redirect is an authentication mode where the user is redirected to the `redirect
 ```tsx
 import React, { useState, useEffect } from'react';
 import { useParams } from 'react-router-dom';
-import { Oauth2, redirect_mode_hook } from '@kalicloud/oauthify';
+import { Oauth2, redirect_mode_hook, user_hook } from '@kalicloud/oauthify';
 
 function App(): React.FC {
     const [ error, setError ] = React.useState<string | any>();
@@ -79,22 +79,27 @@ function App(): React.FC {
      * 
     */
 
-   setUser(oauth_data.decodedToken.email);
-   }
+        const user = new user_hook()
 
-   const Error = (error: string | any) => {
-   setError(error)
-   }
+        // Get the oauth Provider
+        const provider = user.checkProvider()
 
-    useEffect(() => {
-        const { client } = useParams();
+        // Get the provider's name
+        const name = provider.id
 
+        alert(`You have now logged in with: ${name} and your email is: ${oauth_data.email}`)
+        setUser(oauth_data.email)
+}
+
+const Error = (error: string | any) => {
+setError(error)
+}
+
+    useEffect(() => {    
         redirect_mode_hook({
-            "client_name": client,
             onSuccess,
             Error
             });
- 
     }, [])
 
     return (
@@ -107,17 +112,16 @@ function App(): React.FC {
     }
 ````
 
-The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
+The `redirect_mode_hook` function will perform all the necessary steps for the authentication process under the hood. And sends back the `User Information` to the `onSuccess` function if successful.
 
-You don't have to write your own authentication handler, you just handle the response from the `Oauth2` component in your app.
+You don't have to write your own authentication handler, you just handle the response from the `redirect_mode_hook` component in your app.
 
-Don't forget to pass the `onSuccess` and `onError` props to the `Oauth2` component. This is required, as the `Oauth2` component will handle the authentication process.
-additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so /auth/:client will be the redirect url. *Required*
+Don't forget to pass the `onSuccess` and `onError` props to the `redirect_mode_hook` component. This is required, as the `redirect_mode_hook` component will handle the authentication process.
+additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so `/:client/redirect` (The client must be the first param in the url!) will be the redirect url. *Required*
 
 # What's new
 > - Mutiple auth methods are supported,
-> - The `Oauth2` component will handle the authentication process, and will return the user's `access_token` and `refresh_token`.
-> - Added Redirection hook, which will perform all the necessary steps for the authentication process under the hood. And sends back the `access_token` and `refresh_token` to the `onSuccess` function if successful.
+> - Added Redirection hook, which will perform all the necessary steps for the authentication process under the hood. And sends back the `user_information` to the `onSuccess` function if successful.
 > - Added support for `client_secret`
 > - Added support for unique `state` to be validated to prevent CSRF attacks.
 > - Added support for `response_type` which is used to determine the type of response that the application will receive.
@@ -130,6 +134,15 @@ additionally <b>Make sure</b> that the code above is wrapped in the redirect url
 - Fully documented
 - Fully tested
 - Easy API authentication under the hood
+- Easy to use
+- No manual interaction required/ handling
+
+## Coming soon
+    - Add support for more providers
+    - Add support for Logout functionality
+    - Add support for Auth Status Check    
+    - Add support for Refreshing Tokens 
+    - Add support for Custom Oauth2.0 Implementations
 
 ## Buitin oauth providers
 
@@ -137,7 +150,8 @@ We have included a select few of built in providers, which you can use by passin
 
 here is a dedication list of the providers we have included:
 > - Google
-> - Github
+> - Microsoft
+> - Facebook
 > - Kalicloud (Default)
 
 Each provider will require some sort of `Client ID` and `Client Secret` to be used, some providers also require the use of an `API Key`
@@ -145,6 +159,10 @@ Each provider will require some sort of `Client ID` and `Client Secret` to be us
 By default it will use the Kalicloud provider, but you can change this by passing the provider name as a string, to the `provider` prop.
 
 Redirect URL will also need to be provided, this is the URL that the user will be redirected to after completing the oauth flow.
+
+### List of Providers that I won't support in the future, unless they update their APIs and Authentication Standards.
+> - Github
+> - Twitch
 
 # Note
 This package is still in development, and is not yet ready for production use, be aware that some api usage might not be stable or not yet implemented.

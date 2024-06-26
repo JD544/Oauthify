@@ -39,7 +39,7 @@ export function Oauth2({
   const handleDoOauth = () => {
     const oauth = new OauthifyProvider()
     
-    oauth.doAuth(provider, clientId, client_secret, scope, redirectUri, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
+    oauth.doAuth(provider, clientId, scope, redirectUri, client_secret, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
   }
 
   return (

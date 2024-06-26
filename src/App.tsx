@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Oauth2, redirect_mode_hook } from '..'
+import { Oauth2, redirect_mode_hook, user_hook } from '..'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,13 +13,17 @@ function App() {
   
     if (callbackCode) {
     redirect_mode_hook({
-      client_name: 'Kalicloud',
       success_callback: (data: any) => {
-        setName(data.decodedToken.email)          
+        const user = new user_hook()
+
+        const user_email = data.email // The user's email address from the provider.
+        const oauth_provider = user.checkProvider()
+
+        if (oauth_provider.id) {
+          alert(`Successfully authenticated with ${oauth_provider.id}`)
+        }
       },
       error_callback: (error: any) => {
-        window.alert("callback error, check console")
-        console.log(error)
       }
     })
     }
@@ -45,14 +49,14 @@ function App() {
          id='test'
          mode={"redirect"}
          className='test'
-         provider="Kalicloud"
-         redirectUri={"http://localhost:5173/oauth2/callback"}
-         state={"4"}
+         provider="Google"
+         redirectUri={"http://localhost:5173/google/callback"}
+        //  state={"4"}
          responseType={"code"}
-         apiKey="$d1e2f3g4-5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4"         
-         clientId="1" 
-         client_secret='a'
-         scope="openid" 
+         apiKey="0"         
+         clientId="933403983824-jj2u5kedlapktv4kni2l1vavtkkd9sd1.apps.googleusercontent.com" 
+         client_secret="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"
+         scope="email" 
          onSuccess={(data: any) => console.log(data)} 
          onError={(error: any) => console.log(error)}
          />

@@ -17,8 +17,9 @@ const redirect_mode_hook = ({
     error_callback
 }: redirect_mode_hook_type) => {
     const search_params = new URLSearchParams(window.location.search);
+    let response_type = localStorage.getItem("responseType");
 
-    const code = search_params.get("code");
+    const code = search_params.get(response_type as string || "code");
     
     if (!code) {
         throw new Error("Missing required parameters");
@@ -88,6 +89,7 @@ const handle_redirect = (
 
             fetch(provider.token_url, {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },                
@@ -98,12 +100,13 @@ const handle_redirect = (
                         localStorage.setItem("access_token", data.access_token);
                         localStorage.setItem("token_type", data.token_type);
                         localStorage.setItem("refresh_token", data.refresh_token);
-                        localStorage.setItem("id_token", data.expires_in);
+                        localStorage.setItem("expires_in", data.expires_in);
                         localStorage.setItem("authentication_type", "OAuth");   
 
                         // make the call to the profile info endpoint
                         fetch(provider.user_endpoint, {
                             method: "GET",                            
+                            credentials: "include",
                             headers: {
                                 "Authorization": `Bearer ${data.access_token}`,
                             }

@@ -3,6 +3,7 @@ export { OauthifyProvider } from './sys/providers'
 export { API } from './sys/api_service'
 export { redirect_mode_hook } from './sys/redirect_mode_hook'
 export { UserModeHook as user_hook } from './sys/user_mode_hook'
+export { handle_popup_exit, isPopup } from './sys/popup_mode_hook'
 
 /**
  * Type definitions for the Oauthify library.
@@ -15,6 +16,11 @@ export type provider = {
 }
 
 export type redirect_mode_hook_type = {
+    success_callback: (data: any) => void,
+    error_callback: (error: any) => void
+}
+
+export type popup_mode_hook_type = {
     success_callback: (data: any) => void,
     error_callback: (error: any) => void
 }

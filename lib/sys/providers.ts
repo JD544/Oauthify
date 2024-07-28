@@ -7,6 +7,7 @@ import {
     scopes,
     restrictScopes
 } from "./current_providers.json";
+import { popup_mode_hook } from "./popup_mode_hook";
 
 export class OauthifyProvider {
     providers: provider[];
@@ -66,24 +67,23 @@ export class OauthifyProvider {
             oauth_url = `${currentProvider.oauth_url}?client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&response_type=${responseType}&response_mode=query&code_challenge_method=S256&code_challenge=${code_challenge.code_challenge}&state=${state}&apiKey=${apiKey}`
          }
 
-         // store clientId, client_secre and redirectUri in local storage for future use
+         // store clientId, client_secret and redirectUri in local storage for future use
          localStorage.setItem("clientId", clientId)
          localStorage.setItem("client_secret", client_secret)
-         localStorage.setItem("redirectUri", redirectUri)
+         localStorage.setItem("redirectUri", redirectUri)         
+         localStorage.setItem("responseType", responseType)
          localStorage.setItem("state", state)
          localStorage.setItem("lastProvider", JSON.stringify(currentProvider))
         
-         if (mode === 'popup') {
-            resolve("You are now being redirected to the OAuth2 provider. Please wait...")
+         if (mode === 'popup') {          
             oauthWindow = window.open(oauth_url
-            , 'Oauth2', 'width=600,height=600')    
+            , 'Oauth2', 'popup')    
 
             if (oauthWindow) {
                 let interval = setInterval(() => {
-                    if (oauthWindow?.location.href.includes(redirectUri)) {
-                        clearInterval(interval)
-                        oauthWindow.close()
-                        resolve(oauthWindow?.location.href)
+                    if (oauthWindow?.closed) {
+                        clearInterval(interval)                                                
+                        popup_mode_hook({success_callback: resolve, error_callback: reject})
                     }
                 }, 2000);
             }            

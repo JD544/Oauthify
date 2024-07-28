@@ -119,7 +119,37 @@ You don't have to write your own authentication handler, you just handle the res
 Don't forget to pass the `onSuccess` and `onError` props to the `redirect_mode_hook` component. This is required, as the `redirect_mode_hook` component will handle the authentication process.
 additionally <b>Make sure</b> that the code above is wrapped in the redirect url, so `/:client/redirect` (The client must be the first param in the url!) will be the redirect url. *Required*
 
+## Example of an handler (Popup handler)
+
+```tsx
+import React, { useEffect } from'react';
+import { user_hook, isPopup, handle_popup_exit } from '@kalicloud/oauthify';
+
+function App(): React.FC {
+    useEffect(() => {
+        const user = new user_hook()
+
+        // Popup mode
+        if (isPopup()) {
+            handle_popup_exit()
+        } 
+    }, [])
+
+    return (
+        <h1>This window will close now...</h1>
+    )
+}
+
+export default App;
+```
+
+The `handle_popup_exit` function will perform all the necessary steps for the authentication process under the hood. And sends back the `User Information` to the `onSuccess` function from the caller window if successful. The current window will close after the authentication process is finished.
+
+
 # What's new
+> - Provider `Kalicloud` is now updated and supported with the brand new authentication endpoints.
+> - updated the `README.md` file with more detailed instructions.
+> - Popup mode is supported, with custom hooks for maximum flexibility and customization.
 > - Mutiple auth methods are supported,
 > - Added Redirection hook, which will perform all the necessary steps for the authentication process under the hood. And sends back the `user_information` to the `onSuccess` function if successful.
 > - Added support for `client_secret`

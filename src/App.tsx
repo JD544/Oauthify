@@ -2,32 +2,44 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Oauth2, redirect_mode_hook, user_hook } from '..'
-
+import { Oauth2, redirect_mode_hook, user_hook, isPopup, handle_popup_exit } from '..'
 function App() {
   const [count, setCount] = useState(0)
   const [ name, setName] = useState('')
 
   useEffect(() => {
     let callbackCode = window.location.search.split("code=")[1];
+    let usrMode = new user_hook();
   
     if (callbackCode) {
-    redirect_mode_hook({
-      success_callback: (data: any) => {
-        const user = new user_hook()
+    // redirect_mode_hook({
+    //   success_callback: (data: any) => {
+    //     const user = new user_hook()
 
-        const user_email = data.email // The user's email address from the provider.
-        const oauth_provider = user.checkProvider()
+    //     const user_email = data.email // The user's email address from the provider.
+    //     const oauth_provider = user.checkProvider()
 
-        if (oauth_provider.id) {
-          alert(`Successfully authenticated with ${oauth_provider.id}`)
-        }
-      },
-      error_callback: (error: any) => {
-      }
-    })
+    //     if (oauth_provider.id) {
+    //       alert(`Successfully authenticated with ${oauth_provider.id}`)
+    //     }
+
+    //     setName(user_email)
+    //   },
+    //   error_callback: (error: any) => {
+    //   }
+    // })
+
+
+    }
+
+    if (isPopup()) {
+      handle_popup_exit();
     }
   }, [])
+
+  const popupSuccessCallback = (data: any) => {
+    setName(data.email as string)
+  }
 
   return (
     <>
@@ -47,18 +59,19 @@ function App() {
         </button>
         <Oauth2
          id='test'
-         mode={"redirect"}
+         mode={"popup"}
          className='test'
-         provider="Google"
-         redirectUri={""}
+         provider="Kalicloud"
+         redirectUri={"http://localhost:5173/kalicloud"}
         //  state={"4"}
          responseType={"code"}
-         apiKey="0"         
+         apiKey=""         
          clientId="" 
          client_secret=""
          scope="email" 
-         onSuccess={(data: any) => console.log(data)} 
-         onError={(error: any) => console.log(error)}
+        //  onSuccess={(data: any) => console.log(data)} 
+         onSuccess={(data: any) => popupSuccessCallback(data)}          
+         onError={(error: any) => window.alert(error)}
          />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR

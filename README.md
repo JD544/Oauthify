@@ -2,6 +2,17 @@
 
  A package for handling Oauth2.0 flows in React, with fully custom oauth flow handlers
 
+ ## Installation
+ Install the package using npm:
+ ```bash
+    npm install @kalicloud/oauthify
+ ```
+ or using yarn:
+ ```bash
+ yarn add @kalicloud/oauthify
+ ```
+
+
  ## Usage
 
  ```tsx
@@ -145,8 +156,15 @@ export default App;
 
 The `handle_popup_exit` function will perform all the necessary steps for the authentication process under the hood. And sends back the `User Information` to the `onSuccess` function from the caller window if successful. The current window will close after the authentication process is finished.
 
+# Authentication Synchronization
+You may want to use Oauthify to authenticate your users on your own server backend, once Oauthify has successfully authenticated the user via the Oauth2 provider.
+
+This is now possible within the brand new `v1.3.2` version of Oauthify.
+
+You can now authenticate the user on your own server backend so the user can access protected routes on the server.
 
 # What's new
+> - `v1.3.2` Server Synchronization support
 > - Provider `Kalicloud` is now updated and supported with the brand new authentication endpoints.
 > - updated the `README.md` file with more detailed instructions.
 > - Popup mode is supported, with custom hooks for maximum flexibility and customization.
@@ -193,6 +211,10 @@ Redirect URL will also need to be provided, this is the URL that the user will b
 ### List of Providers that I won't support in the future, unless they update their APIs and Authentication Standards.
 > - Github
 > - Twitch
+
+# Roadmap
+> - Add more hooks to handle the authentication process and user experience
+> - Custom Components For each provider
 
 # Note
 This package is still in development, and is not yet ready for production use, be aware that some api usage might not be stable or not yet implemented.

@@ -2,10 +2,10 @@
     "providers": [
         {
             "id": "Kalicloud",
-            "oauth_url": "http://localhost:3000/oauth2",
-            "token_url": "http://localhost:3000/oauth2/token",
-            "user_endpoint": "http://localhost:3000/oauth2/v3/user",
-            "logout_url": "http://localhost:3000/oauth2/logout"           
+            "oauth_url": "https://auth.kalicloud.dev/oauth2",
+            "token_url": "https://auth.kalicloud.dev/oauth2/token",
+            "user_endpoint": "https://auth.kalicloud.dev/oauth2/v3/user",
+            "logout_url": "https://auth.kalicloud.dev/oauth2/logout"           
         }, 
         {
             "id": "Google",

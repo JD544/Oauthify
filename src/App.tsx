@@ -11,7 +11,7 @@ function App() {
     let callbackCode = window.location.search.split("code=")[1];
     let usrMode = new user_hook();
   
-    if (callbackCode) {
+    // if (callbackCode) {
     // redirect_mode_hook({
     //   success_callback: (data: any) => {
     //     const user = new user_hook()
@@ -22,15 +22,12 @@ function App() {
     //     if (oauth_provider.id) {
     //       alert(`Successfully authenticated with ${oauth_provider.id}`)
     //     }
-
-    //     setName(user_email)
+        
     //   },
     //   error_callback: (error: any) => {
     //   }
     // })
-
-
-    }
+    // }
 
     if (isPopup()) {
       handle_popup_exit();
@@ -38,7 +35,11 @@ function App() {
   }, [])
 
   const popupSuccessCallback = (data: any) => {
-    setName(data.email as string)
+    // setName(data.email as string)
+    const user = new user_hook()
+    const provider = user.checkProvider()
+    alert(`Successfully authenticated with ${provider.id}`)
+    return setName(data.email as string)
   }
 
   return (
@@ -59,10 +60,13 @@ function App() {
         </button>
         <Oauth2
          id='test'
-         mode={"popup"}
+         mode={"redirect"}
          className='test'
-         provider="Kalicloud"
-         redirectUri={"http://localhost:5173/kalicloud"}
+         provider="Microsoft"
+        //  syncAuthOnServer={{
+        //   server_type: "Kalicloud"          
+        //  }}
+         redirectUri={""}
         //  state={"4"}
          responseType={"code"}
          apiKey=""         

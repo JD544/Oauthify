@@ -30,6 +30,7 @@ export function Oauth2({
   mode,
   responseType, 
   redirectUri,
+  syncAuthOnServer,
   clientId, 
   client_secret,
   scope, 
@@ -39,7 +40,7 @@ export function Oauth2({
   const handleDoOauth = () => {
     const oauth = new OauthifyProvider()
     
-    oauth.doAuth(provider, clientId, scope, redirectUri, client_secret, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
+    oauth.doAuth(provider, clientId, scope, redirectUri, client_secret, syncAuthOnServer, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
   }
 
   return (

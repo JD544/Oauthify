@@ -12,6 +12,8 @@ export { handle_popup_exit, isPopup } from './sys/popup_mode_hook'
 export type provider = {
     id: string,
     oauth_url: string,
+    user_endpoint: string
+    logout_url: string
     token_url: string
 }
 
@@ -33,6 +35,7 @@ export type Oauth2Props = {
     clientId: string,
     client_secret: string,
     scope: string,
+    syncAuthOnServer?: boolean,
     state?: string,
     mode: "popup" | "redirect",
     responseType: "code",

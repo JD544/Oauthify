@@ -1,4 +1,4 @@
-import { popup_mode_hook_type } from "../main";
+import { OauthifyProvider, popup_mode_hook_type } from "../main";
 import {
     providers
 } from "./current_providers.json";
@@ -21,7 +21,7 @@ export const popup_mode_hook = ({
         throw new Error('success_callback and error_callback must be functions');
     }
 
-    let response_type = localStorage.getItem("responseType") as string;
+    let response_type = localStorage.getItem("oauth_code") as string;
     let provider = JSON.parse(localStorage.getItem("lastProvider") || "{}").id as string;
 
     if (!response_type || !provider) {
@@ -53,80 +53,14 @@ export const handle_authentication = (
         throw new Error(`Provider ${client_name} not found, please add it to current_providers.json`);
     }
 
-    var client_id = localStorage.getItem('clientId');
-    var client_secret = localStorage.getItem('client_secret');
-    var redirect_uri = localStorage.getItem('redirectUri');
-    var code_verifier = localStorage.getItem('code_verifier');
+    const oauthProvider = new OauthifyProvider();
 
-    let body: {
-        code: string,
-        grant_type: string,                
-        client_id: string | null,
-        redirect_uri: string | null,                
-        code_verifier?: string | null
-        client_secret?: string | null
-        scope?: string
-    } = {
-        code: code,                    
-        grant_type: "authorization_code",
-        client_id: provider.id !== 'Microsoft' ? client_id! : null!,
-        redirect_uri: redirect_uri!,                
-    }
-
-    if (provider.id === 'Microsoft') {
-        body["code_verifier"] = code_verifier
-        body["scope"] = 'openid offline_access'
-    }
-
-    if (provider.id === 'Facebook') {
-        body["client_secret"] = client_secret
-    }
-
-    if (provider.id === 'Google') {
-        body["client_secret"] = client_secret                                        
-        body["scope"] = 'email'
-    }
-
-    let search_params = new URLSearchParams(body as any);
-
-    fetch(provider.token_url, {
-        credentials: "include",
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },                
-        body: search_params
-    }).then((res) => {
-        if (res.ok) {
-            res.json().then((data) => {                        
-                localStorage.setItem("access_token", data.access_token);
-                localStorage.setItem("token_type", data.token_type);
-                localStorage.setItem("refresh_token", data.refresh_token);
-                localStorage.setItem("id_token", data.expires_in);
-                localStorage.setItem("authentication_type", "OAuth");   
-
-                // make the call to the profile info endpoint
-                fetch(provider.user_endpoint, {
-                    method: "GET",             
-                    credentials: "include",               
-                    headers: {
-                        "Authorization": `Bearer ${data.access_token}`,
-                    }
-                }).then((res) => {
-                    if (res.ok) {
-                        res.json().then((infoEndpoint) => {
-                            localStorage.setItem("user", JSON.stringify(infoEndpoint));
-                            return success_callback(infoEndpoint);
-                        });
-                    } else {
-                        return error_callback('Could not get user info');
-                    }
-                })
-            });
-        } else {
-         return error_callback('Could not get access token');
-        }
-    })
+    return oauthProvider.doAPI(
+        provider,
+        code,
+        success_callback,
+        error_callback
+    );
 }
 
 /**
@@ -134,10 +68,11 @@ export const handle_authentication = (
  */
 const handle_popup_exit = () => {
     localStorage.removeItem("mode");
-
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get(localStorage.getItem("responseType") || "code");
+    localStorage.setItem("oauth_code", code as string);
     if (window.opener && window.opener !== window) {
         window.opener.postMessage({ type: "close" }, "*");     
-        localStorage.setItem("responseType", window.location.href.split("code=")[1]);
         return window.close();
     }
 

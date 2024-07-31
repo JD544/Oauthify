@@ -44,6 +44,9 @@
                 apiKey="<API_KEY" 
                 clientId="<CLIENT_ID>" 
                 clientSecret="<CLIENT_SECRET>"
+                syncAuthOnServer={{
+                    server_type: "Kalicloud" // Syncs authentication to the server
+                }}
                 state="<STATE>"
                 redirectUri="<REDIRECT_URI>"
                 mode="<MODE>"

@@ -14,6 +14,8 @@ import { Oauth2Props } from '../../main.ts';
  *   - mode (string): Specify if you want to use popup or redirect.
  *   - responseType (string): Specify your response type.
  *   - clientId (string): The client ID for the OAuth2 provider.
+ *   - syncAuthOnServer (boolean): Whether to sync the authentication state with the server.
+ *   - syncOptions (sync_options): The sync options for the OAuth2 provider.
  *   - scope (string): The requested scope of information from the provider.
  *   - onSuccess (function): The callback function to be called on successful authentication.
  *     - oauth_data (any): The data returned by the OAuth2 provider on successful authentication.
@@ -31,6 +33,7 @@ export function Oauth2({
   responseType, 
   redirectUri,
   syncAuthOnServer,
+  syncOptions,
   clientId, 
   client_secret,
   scope, 
@@ -40,7 +43,7 @@ export function Oauth2({
   const handleDoOauth = () => {
     const oauth = new OauthifyProvider()
     
-    oauth.doAuth(provider, clientId, scope, redirectUri, client_secret, syncAuthOnServer, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
+    oauth.doAuth(provider, clientId, scope, redirectUri, client_secret, syncAuthOnServer, syncOptions, apiKey, state, responseType, mode).then(onSuccess).catch(onError)
   }
 
   return (

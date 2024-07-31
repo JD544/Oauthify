@@ -36,10 +36,16 @@ export type Oauth2Props = {
     client_secret: string,
     scope: string,
     syncAuthOnServer?: boolean,
+    syncOptions?: sync_options,
     state?: string,
     mode: "popup" | "redirect",
     responseType: "code",
     redirectUri: string,
     onSuccess: (oauth_data: any) => void,
     onError: (error: any) => void
+}
+
+export type sync_options = {
+    server_start_url: string,
+    server_end_url: string
 }

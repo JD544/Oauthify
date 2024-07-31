@@ -1,4 +1,4 @@
-import { provider } from './../main';
+import { provider, sync_options } from './../main';
 // import { API } from "./api_service";
 import pkceChallenge from "pkce-challenge";
 
@@ -29,6 +29,8 @@ export class OauthifyProvider {
      * @param {string} redirectUri - The redirect URI after the authentication.
      * @param {string} [apiKey] - The optional API key for the provider.
      * @param {string} [client_secret] - The optional client secret for the provider.
+     * @param {boolean} [serverSync] - The optional server sync setting for the provider.
+     * @param {sync_options} [sync_options] - The optional sync options for the provider.
      * @param {string} [state] - The optional state for the authentication.
      * @param {string} [responseType='code'] - The optional response type for the authentication.
      * @param {string} [mode='redirect'] - The optional mode for the authentication flow.
@@ -41,6 +43,7 @@ export class OauthifyProvider {
         redirectUri: string,        
         client_secret: string,
         serverSync?: boolean,
+        sync_options?: sync_options,
         apiKey?: string,
         state: string = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),    
         responseType: string = 'code',
@@ -59,7 +62,10 @@ export class OauthifyProvider {
 
          // Start sync
          if (serverSync) {
-            fetch("http://localhost:3000/social/start", {
+            if (!sync_options?.server_start_url || !sync_options?.server_end_url) 
+                throw new Error("You must provide server_start_url and server_end_url in sync_options, see Documentation for more information.");
+
+            fetch(sync_options.server_start_url, {
                 method: 'POST',                
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,6 +101,7 @@ export class OauthifyProvider {
          localStorage.setItem("redirectUri", redirectUri)         
          localStorage.setItem("responseType", responseType)
          localStorage.setItem("serverSync", serverSync ? 'true' : 'false')
+         localStorage.setItem("sync_endpoint", sync_options?.server_end_url || '')
          localStorage.setItem("state", state)
          localStorage.setItem("lastProvider", JSON.stringify(currentProvider))
         
@@ -130,9 +137,10 @@ export class OauthifyProvider {
 
             var client_id = localStorage.getItem('clientId');
             var client_secret = localStorage.getItem('client_secret');
-            var redirect_uri = localStorage.getItem('redirectUri');
+            var redirect_uri = localStorage.getItem('redirectUri');            
             var code_verifier = localStorage.getItem('code_verifier');
             var serverSync = localStorage.getItem('serverSync') === 'true';
+            var sync_endpoint = localStorage.getItem('sync_endpoint');
 
             let body: {
                 code: string,
@@ -183,7 +191,10 @@ export class OauthifyProvider {
                         localStorage.setItem("expires_in", data.expires_in);
                         localStorage.setItem("authentication_type", "OAuth");   
 
-                        if (serverSync) {
+                        if (!sync_endpoint)
+                            throw new Error("You must set a sync endpoint in order to sync with the server");
+
+                        if (serverSync && sync_endpoint) {
                             let body: {
                                 redirect_uri: string | null,
                                 client_id?: string | null,
@@ -198,7 +209,7 @@ export class OauthifyProvider {
                                 user_token: data.access_token
                             }
 
-                            fetch('http://localhost:3000/social/end', {
+                            fetch(sync_endpoint, {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/x-www-form-urlencoded",

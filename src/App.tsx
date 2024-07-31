@@ -63,9 +63,8 @@ function App() {
          mode={"redirect"}
          className='test'
          provider="Microsoft"
-        //  syncAuthOnServer={{
-        //   server_type: "Kalicloud"          
-        //  }}
+         syncAuthOnServer={true}
+         syncOptions={{server_start_url: "http://localhost:3000/social/start", server_end_url: "http://localhost:3000/social/end"}}
          redirectUri={""}
         //  state={"4"}
          responseType={"code"}

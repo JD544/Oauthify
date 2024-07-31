@@ -44,9 +44,8 @@
                 apiKey="<API_KEY" 
                 clientId="<CLIENT_ID>" 
                 clientSecret="<CLIENT_SECRET>"
-                syncAuthOnServer={{
-                    server_type: "Kalicloud" // Syncs authentication to the server
-                }}
+                syncAuthOnServer={true} // This will sync the authentication status with the server
+                syncOptions={{server_start_url: "http://localhost:3000/social/start", server_end_url: "http://localhost:3000/social/end"}} // This will tell Oauthify where to start and end the authentication process
                 state="<STATE>"
                 redirectUri="<REDIRECT_URI>"
                 mode="<MODE>"
@@ -141,8 +140,6 @@ import { user_hook, isPopup, handle_popup_exit } from '@kalicloud/oauthify';
 
 function App(): React.FC {
     useEffect(() => {
-        const user = new user_hook()
-
         // Popup mode
         if (isPopup()) {
             handle_popup_exit()

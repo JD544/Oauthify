@@ -12,6 +12,11 @@
  yarn add @kalicloud/oauthify
  ```
 
+## Build
+Build the package using the following command:
+ ```bash
+ npm run build
+ ```
 
  ## Usage
 
@@ -44,7 +49,7 @@
                 apiKey="<API_KEY" 
                 clientId="<CLIENT_ID>" 
                 clientSecret="<CLIENT_SECRET>"
-                syncAuthOnServer={true} // This will sync the authentication status with the server
+                syncAuthOnServer={true} // This will sync the authentication status with the server (Optional)
                 syncOptions={{server_start_url: "http://localhost:3000/social/start", server_end_url: "http://localhost:3000/social/end"}} // This will tell Oauthify where to start and end the authentication process
                 state="<STATE>"
                 redirectUri="<REDIRECT_URI>"
@@ -59,6 +64,26 @@
  }
 
 ````
+# Allowed parameters
+| Parameter | Type | Description | defaultValue | Required |
+| --- | --- | --- | --- | --- |
+| id | string | The id of the oauth provider | | true |
+| className | string | The class name of the oauth provider | | false |
+| provider | string | The name of the oauth provider | kalicloud | true |
+| apiKey | string | The api key of the oauth provider (Required by some) | | false |
+| clientId | string | The client id of the oauth provider | | true |
+| clientSecret | string | The client secret of the oauth provider | | true |
+| state | string | A unique identifier for the request | Generated for you | false |
+| redirectUri | string | The redirect uri of the oauth provider | | true |
+| mode | string | The mode of the oauth provider | popup | true |
+| responseType | string | The response type of the oauth provider | code | true |
+| scope | string | The scope of the oauth provider | | true |
+| syncAuthOnServer | boolean | Whether to sync the authentication status with the server | false | false |
+| syncOptions | object | The options for the syncAuthOnServer | | false |
+| onSuccess | function | The function to be called when the oauth login is successful | | true |
+| onError | function | The function to be called when the oauth login fails | | true |
+
+
 
 # Authentication Modes
 There are two types of authentication modes, `Redirect` and `Popup`.
@@ -156,12 +181,18 @@ export default App;
 
 The `handle_popup_exit` function will perform all the necessary steps for the authentication process under the hood. And sends back the `User Information` to the `onSuccess` function from the caller window if successful. The current window will close after the authentication process is finished.
 
+# Diagram and Flowchart
+![image](https://github.com/user-attachments/assets/da445fc1-156c-45d5-a3a1-85d5674f34fa)
+
+
 # Authentication Synchronization
 You may want to use Oauthify to authenticate your users on your own server backend, once Oauthify has successfully authenticated the user via the Oauth2 provider.
 
 This is now possible within the brand new `v1.3.2` version of Oauthify.
 
 You can now authenticate the user on your own server backend so the user can access protected routes on the server.
+
+for servide-side implementation, please refer to: [Oauth2 Server](https://github.com/JD544/Oauth2_Server)
 
 # What's new
 > - `v1.3.2` Server Synchronization support
